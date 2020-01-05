@@ -68,7 +68,7 @@ namespace LogApp.DAL.Repositories
                 .OrderBy(record => record.LastName);
         }
 
-        public void RangeByTime(DateTimeOffset startTime, DateTimeOffset endTime)
+        public void RangeByTime(DateTimeOffset? startTime, DateTimeOffset? endTime)
         {
             _records = _context.Set<Record>()
                 .Where(record => record.Timestamp >= startTime && record.Timestamp <= endTime)

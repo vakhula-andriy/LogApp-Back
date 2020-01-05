@@ -13,6 +13,6 @@ namespace LogApp.Core.Abstractions.Repositories
         public void RangeByEmail(string startEmail, string endEmail);
         public void RangeByAge(int startAge, int endAge);
         public void RangeByIP(string startIP, string endIP);
-        public void RangeByTime(DateTimeOffset startTime, DateTimeOffset endTime);
+        public void RangeByTime(DateTimeOffset? startTime, DateTimeOffset? endTime);
     }
 }

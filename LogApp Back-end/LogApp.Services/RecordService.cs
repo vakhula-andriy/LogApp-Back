@@ -57,7 +57,7 @@ namespace LogApp.Services
         {
             return _unitOfWork.Records._records.Count();
         }
-        public void FilterByAge(int startAge = 0, int endAge = 100)
+        public void FilterByAge(int startAge, int endAge)
         {
             _unitOfWork.Records.RangeByAge(startAge, endAge);
         }
@@ -73,7 +73,7 @@ namespace LogApp.Services
         {
             _unitOfWork.Records.RangeByLastName(startName, endName);
         }
-        public void FilterByID(long startID = 0, long endID = long.MaxValue)
+        public void FilterByID(long startID, long endID)
         {
             _unitOfWork.Records.RangeByID(startID, endID);
         }
@@ -81,7 +81,7 @@ namespace LogApp.Services
         {
             _unitOfWork.Records.RangeByIP(startIP, endIP);
         }
-        public void FilterByTime(DateTimeOffset startTime, DateTimeOffset endTime)
+        public void FilterByTime(DateTimeOffset? startTime, DateTimeOffset? endTime)
         {
             _unitOfWork.Records.RangeByTime(startTime, endTime);
         }

@@ -13,8 +13,8 @@ namespace LogApp.Controllers
         private readonly IRecordService _recordService;
         private readonly IRecordPagingService<RecordOverallDTO> _recordPagingService;
         private readonly IRecordDetailsService<RecordDetailsDTO> _recordDetailsService;
-        private static int _pageSize = 3;
-        private static int _recordsAmount = 0;
+        private static int _pageSize = 25;
+        private static int? _recordsAmount = null;
         public RecordController(IRecordService recordService, 
                                 IRecordPagingService<RecordOverallDTO> recordPagingService,
                                 IRecordDetailsService<RecordDetailsDTO> recordDetailsService)
@@ -27,13 +27,13 @@ namespace LogApp.Controllers
         [HttpGet("/recordAmount")]
         public ActionResult<int> GetRecordsAmount()
         {
-            if (_recordsAmount == 0)
+            if (_recordsAmount == null)
                 _recordsAmount = _recordService.GetRecordsAmount();
             return _recordsAmount;
         }
 
         [HttpGet]
-        public ActionResult SetPageSize([FromQuery] int pageSize)
+        public ActionResult SetPageSize([FromQuery] int pageSize = 25)
         {
             _pageSize = pageSize;
             return Ok();
@@ -53,8 +53,9 @@ namespace LogApp.Controllers
         }
 
         [HttpGet("/ID/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByID([FromQuery] long minID,
-                                                            [FromQuery] long maxID, int page)
+        public ActionResult<List<RecordOverallDTO>> GetByID(int page,
+                                                            [FromQuery] long minID = 1,
+                                                            [FromQuery] long maxID = long.MaxValue)
         {
             _recordService.FilterByID(minID, maxID);
             _recordsAmount = _recordService.GetRecordsAmount();
@@ -62,8 +63,9 @@ namespace LogApp.Controllers
         }
 
         [HttpGet("/age/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByAge([FromQuery] int minAge, 
-                                                             [FromQuery] int maxAge, int page)
+        public ActionResult<List<RecordOverallDTO>> GetByAge(int page,
+                                                             [FromQuery] int minAge = 0, 
+                                                             [FromQuery] int maxAge = 99)
         {
             _recordService.FilterByAge(minAge, maxAge);
             _recordsAmount = _recordService.GetRecordsAmount();
@@ -71,8 +73,9 @@ namespace LogApp.Controllers
         }
 
         [HttpGet("/firstName/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByFirstName([FromQuery] string minName, 
-                                                                   [FromQuery] string maxName, int page)
+        public ActionResult<List<RecordOverallDTO>> GetByFirstName(int page,
+                                                                   [FromQuery] string minName = @"A*", 
+                                                                   [FromQuery] string maxName = @"z*")
         {
             _recordService.FilterByFirstName(minName, maxName);
             _recordsAmount = _recordService.GetRecordsAmount();
@@ -80,8 +83,9 @@ namespace LogApp.Controllers
         }
 
         [HttpGet("/lastName/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByLastName([FromQuery] string minName, 
-                                                                  [FromQuery] string maxName, int page)
+        public ActionResult<List<RecordOverallDTO>> GetByLastName(int page,
+                                                                  [FromQuery] string minName = @"A*",
+                                                                  [FromQuery] string maxName = @"z*")
         {
             _recordService.FilterByLastName(minName, maxName);
             _recordsAmount = _recordService.GetRecordsAmount();
@@ -89,8 +93,9 @@ namespace LogApp.Controllers
         }
 
         [HttpGet("/email/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByEmail([FromQuery] string minEmail,
-                                                               [FromQuery] string maxEmail, int page)
+        public ActionResult<List<RecordOverallDTO>> GetByEmail(int page,
+                                                               [FromQuery] string minEmail = @"\0*",
+                                                               [FromQuery] string maxEmail = @"z*")
         {
             _recordService.FilterByEmail(minEmail, maxEmail);
             _recordsAmount = _recordService.GetRecordsAmount();
@@ -98,8 +103,9 @@ namespace LogApp.Controllers
         }
 
         [HttpGet("/IP/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByIP([FromQuery] string minIP,
-                                                            [FromQuery] string maxIP, int page)
+        public ActionResult<List<RecordOverallDTO>> GetByIP(int page,
+                                                            [FromQuery] string minIP = ".*",
+                                                            [FromQuery] string maxIP = "9*")
         {
             _recordService.FilterByIP(minIP, maxIP);
             _recordsAmount = _recordService.GetRecordsAmount();
@@ -107,9 +113,14 @@ namespace LogApp.Controllers
         }
 
         [HttpGet("/time/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByTime([FromQuery] DateTimeOffset minTime,
-                                                              [FromQuery] DateTimeOffset maxTime, int page)
+        public ActionResult<List<RecordOverallDTO>> GetByTime(int page,
+                                                              [FromQuery] DateTimeOffset? minTime = null,
+                                                              [FromQuery] DateTimeOffset? maxTime = null)
         {
+            if (minTime == null)
+                minTime = new DateTimeOffset(new DateTime(2000, 1, 1));
+            if (maxTime == null)
+                maxTime = new DateTimeOffset(new DateTime(3000, 12, 31));
             _recordService.FilterByTime(minTime, maxTime);
             _recordsAmount = _recordService.GetRecordsAmount();
             return _recordPagingService.GetPage(page, _pageSize);
