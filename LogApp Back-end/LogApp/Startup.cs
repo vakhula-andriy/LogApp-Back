@@ -13,6 +13,7 @@ using LogApp.Core;
 using LogApp.Core.DTO;
 using LogApp.Core.Abstractions;
 using LogApp.Core.Abstractions.Services;
+using LogApp.Services.MessageHub;
 
 namespace LogApp
 {
@@ -25,18 +26,18 @@ namespace LogApp
 
         public IConfiguration Configuration { get; }
 
-        readonly string MyAllowSpecificOrigins = "_allowAllOrigins";
+        //readonly string MyAllowSpecificOrigins = "_allowAllOrigins";
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
-                options.AddPolicy(MyAllowSpecificOrigins,
-                builder =>
-                {
-                    builder.WithOrigins("*");
-                });
-            });
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials()
+                    .WithOrigins("http://localhost:4200");
+            }));
 
             services.AddHangfire(configuration =>
             {
@@ -51,6 +52,8 @@ namespace LogApp
             services.AddSingleton(mapper);
 
             services.AddControllers();
+
+            services.AddSignalR();
 
             services.AddDbContext<LogAppContext>(context => context.UseSqlServer(Configuration.GetConnectionString("DatabaseConnection")));
 
@@ -74,7 +77,12 @@ namespace LogApp
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors("CorsPolicy");
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotifyHub>("/notifyNewRecords");
+            });
 
             app.UseHangfireServer();
             RecurringJob.AddOrUpdate<RecordFiller>(x => x.RandomFill(), Cron.MinuteInterval(5));

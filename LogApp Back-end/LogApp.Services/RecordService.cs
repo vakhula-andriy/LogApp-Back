@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.SignalR;
 using FluentValidation;
 using LogApp.Core.Abstractions;
 using LogApp.Core.Abstractions.Services;
 using LogApp.Core.Models;
 using LogApp.Core.Validators;
+using LogApp.Services.MessageHub;
 
 namespace LogApp.Services
 {
@@ -13,10 +15,12 @@ namespace LogApp.Services
     {
         private IUnitOfWork _unitOfWork;
         private readonly RecordValidator _recordsValidator;
-        public RecordService(IUnitOfWork unitOfWork)
+        private IHubContext<NotifyHub, IMesageHubClient> _hubContext;
+        public RecordService(IUnitOfWork unitOfWork, IHubContext<NotifyHub, IMesageHubClient> hubContext)
         {
             _unitOfWork = unitOfWork;
             _recordsValidator = new RecordValidator();
+            _hubContext = hubContext;
         }
 
         public void Delete(int id)
@@ -33,9 +37,9 @@ namespace LogApp.Services
         }
         public List<Record> InsertRange(List<Record> records)
         {
-            //records.ForEach(rec => _recordsValidator.ValidateAndThrow(rec));
             _unitOfWork.Records.AddRange(records);
             _unitOfWork.Save();
+            _hubContext.Clients.All.RecordsAdded(records.Count);
             return records;
         }
         public Record Update(Record record)
