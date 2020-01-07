@@ -26,8 +26,6 @@ namespace LogApp
 
         public IConfiguration Configuration { get; }
 
-        //readonly string MyAllowSpecificOrigins = "_allowAllOrigins";
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
@@ -88,10 +86,7 @@ namespace LogApp
             RecurringJob.AddOrUpdate<RecordFiller>(x => x.RandomFill(), Cron.MinuteInterval(5));
             app.UseHangfireDashboard();
 
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
