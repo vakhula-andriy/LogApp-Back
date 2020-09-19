@@ -12,8 +12,8 @@ namespace LogApp.Services
 {
     public class RecordService : IRecordService
     {
-        private IRecordRepository _recordRepository;
-        private LogAppContext _context;
+        private readonly IRecordRepository _recordRepository;
+        private readonly LogAppContext _context;
         private readonly RecordValidator _recordsValidator;
         public RecordService(IRecordRepository recordRepository, LogAppContext logAppContext)
         {

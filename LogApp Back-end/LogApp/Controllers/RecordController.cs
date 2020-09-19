@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using LogApp.Core.Abstractions.Services;
 using LogApp.Core.DTO;
 using LogApp.Core.Models;
-using LogApp.Core.Abstractions.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LogApp.Controllers
 {

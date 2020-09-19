@@ -10,8 +10,8 @@ namespace LogApp.Services
 {
     public class RecordPagingService : IRecordPagingService<RecordOverallDTO, Record>
     {
-        private IRecordRepository _recordRepository;
-        private IMapper _mapper;
+        private readonly IRecordRepository _recordRepository;
+        private readonly IMapper _mapper;
         public RecordPagingService(IRecordRepository recordRepository, IMapper mapper)
         {
             _recordRepository = recordRepository;

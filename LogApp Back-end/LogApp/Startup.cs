@@ -1,3 +1,14 @@
+using AutoMapper;
+using Hangfire;
+using LogApp.Core;
+using LogApp.Core.Abstractions.Repositories;
+using LogApp.Core.Abstractions.Services;
+using LogApp.Core.DTO;
+using LogApp.Core.Models;
+using LogApp.DAL;
+using LogApp.DAL.Repositories;
+using LogApp.Services;
+using LogApp.Services.MessageHub;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -5,17 +16,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using AutoMapper;
-using Hangfire;
-using LogApp.DAL;
-using LogApp.DAL.Repositories;
-using LogApp.Services;
-using LogApp.Core;
-using LogApp.Core.Models;
-using LogApp.Core.DTO;
-using LogApp.Core.Abstractions.Services;
-using LogApp.Core.Abstractions.Repositories;
-using LogApp.Services.MessageHub;
 
 namespace LogApp
 {
@@ -79,13 +79,8 @@ namespace LogApp
 
             app.UseCors("CorsPolicy");
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<NotifyHub>("/notifyNewRecords");
-            });
-
             app.UseHangfireServer();
-            RecurringJob.AddOrUpdate<RecordFiller>(x => x.RandomFill(), Cron.MinuteInterval(5));
+            RecurringJob.AddOrUpdate<RecordFiller>(x => x.RandomFill(), "0 */5 * ? * *");
             app.UseHangfireDashboard();
 
             app.UseSwagger();
@@ -103,6 +98,7 @@ namespace LogApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<NotifyHub>("/notifyNewRecords");
             });
         }
     }
