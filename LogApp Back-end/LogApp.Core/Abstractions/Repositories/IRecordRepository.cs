@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LogApp.Core.Models;
 
@@ -6,13 +7,13 @@ namespace LogApp.Core.Abstractions.Repositories
 {
     public interface IRecordRepository : IRepository<Record>
     {
-        public IQueryable<Record> _records { get; }
-        public void RangeByID(long startID, long endID);
-        public void RangeByFirstName(string startName, string endName);
-        public void RangeByLastName(string startName, string endName);
-        public void RangeByEmail(string startEmail, string endEmail);
-        public void RangeByAge(int startAge, int endAge);
-        public void RangeByIP(string startIP, string endIP);
-        public void RangeByTime(DateTimeOffset? startTime, DateTimeOffset? endTime);
+        public IQueryable<Record> GetRange(IQueryable<Record> records, int page, int pageSize = 25);
+        public IQueryable<Record> RangeByID(long startID, long endID);
+        public IQueryable<Record> RangeByFirstName(string startName, string endName);
+        public IQueryable<Record> RangeByLastName(string startName, string endName);
+        public IQueryable<Record> RangeByEmail(string startEmail, string endEmail);
+        public IQueryable<Record> RangeByAge(int startAge, int endAge);
+        public IQueryable<Record> RangeByIP(string startIP, string endIP);
+        public IQueryable<Record> RangeByTime(DateTimeOffset startTime, DateTimeOffset endTime);
     }
 }

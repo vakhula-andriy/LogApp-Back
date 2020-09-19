@@ -10,6 +10,7 @@ using Hangfire;
 using LogApp.DAL;
 using LogApp.Services;
 using LogApp.Core;
+using LogApp.Core.Models;
 using LogApp.Core.DTO;
 using LogApp.Core.Abstractions;
 using LogApp.Core.Abstractions.Services;
@@ -58,7 +59,7 @@ namespace LogApp
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IRecordService, RecordService>();
-            services.AddScoped<IRecordPagingService<RecordOverallDTO>, RecordPagingService>();
+            services.AddScoped<IRecordPagingService<RecordOverallDTO, Record>, RecordPagingService>();
             services.AddScoped<IRecordDetailsService<RecordDetailsDTO>, RecordDetailsService>();
 
             services.AddSwaggerGen(c =>

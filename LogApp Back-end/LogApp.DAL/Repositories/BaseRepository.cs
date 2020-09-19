@@ -49,10 +49,5 @@ namespace LogApp.DAL.Repositories
                 return res;
             throw new Exception("Invalid ID");
         }
-
-        public virtual IQueryable<TEntity> GetRange(int page, int pageSize = 25)
-        {
-            return _context.Set<TEntity>().Skip(page * pageSize).Take(pageSize).AsQueryable();
-        }
     }
 }
