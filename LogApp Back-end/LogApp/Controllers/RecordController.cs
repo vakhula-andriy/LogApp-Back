@@ -61,34 +61,31 @@ namespace LogApp.Controllers
         }
 
         [HttpGet("/firstName/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByFirstName([FromQuery] string minName,
-                                                                   [FromQuery] string maxName,
+        public ActionResult<List<RecordOverallDTO>> GetByFirstName([FromQuery] string name,
                                                                    int page,
                                                                    int pageSize = 25)
         {
-            var filteredRecords = _recordService.FilterByFirstName(minName, maxName);
+            var filteredRecords = _recordService.FilterByFirstName(name);
             Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
             return _recordPagingService.GetPage(filteredRecords, page, pageSize);
         }
 
         [HttpGet("/lastName/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByLastName([FromQuery] string minName,
-                                                                  [FromQuery] string maxName,
+        public ActionResult<List<RecordOverallDTO>> GetByLastName([FromQuery] string name,
                                                                   int page,
                                                                   int pageSize = 25)
         {
-            var filteredRecords = _recordService.FilterByLastName(minName, maxName);
+            var filteredRecords = _recordService.FilterByLastName(name);
             Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
             return _recordPagingService.GetPage(filteredRecords, page, pageSize);
         }
 
         [HttpGet("/email/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByEmail([FromQuery] string minEmail,
-                                                               [FromQuery] string maxEmail,
+        public ActionResult<List<RecordOverallDTO>> GetByEmail([FromQuery] string email,
                                                                int page,
                                                                int pageSize = 25)
         {
-            var filteredRecords = _recordService.FilterByEmail(minEmail, maxEmail);
+            var filteredRecords = _recordService.FilterByEmail(email);
             Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
             return _recordPagingService.GetPage(filteredRecords, page, pageSize);
         }

@@ -60,17 +60,17 @@ namespace LogApp.Services
         {
             return _recordRepository.RangeByAge(startAge, endAge);
         }
-        public IQueryable<Record> FilterByEmail(string startEmail, string endEmail)
+        public IQueryable<Record> FilterByEmail(string email)
         {
-            return _recordRepository.RangeByEmail(startEmail, endEmail);
+            return _recordRepository.RangeByEmail(email);
         }
-        public IQueryable<Record> FilterByFirstName(string startName, string endName)
+        public IQueryable<Record> FilterByFirstName(string name)
         {
-            return _recordRepository.RangeByFirstName(startName, endName);
+            return _recordRepository.RangeByFirstName(name);
         }
-        public IQueryable<Record> FilterByLastName(string startName, string endName)
+        public IQueryable<Record> FilterByLastName(string name)
         {
-            return _recordRepository.RangeByLastName(startName, endName);
+            return _recordRepository.RangeByLastName(name);
         }
         public IQueryable<Record> FilterByID(long startID = 0, long endID = long.MaxValue)
         {

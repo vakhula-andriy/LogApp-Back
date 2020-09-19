@@ -29,19 +29,17 @@ namespace LogApp.DAL.Repositories
                     .OrderBy(record => record.Age);
         }
 
-        public IQueryable<Record> RangeByEmail(string startEmail, string endEmail)
+        public IQueryable<Record> RangeByEmail(string email)
         {
             return _context.Set<Record>()
-                .Where(record => String.Compare(record.Email, startEmail) >= 0
-                              && String.Compare(record.Email, endEmail) <= 0)
+                .Where(record => record.Email.Contains(email))
                 .OrderBy(record => record.Email);
         }
 
-        public IQueryable<Record> RangeByFirstName(string startName, string endName)
+        public IQueryable<Record> RangeByFirstName(string name)
         {
             return _context.Set<Record>()
-                .Where(record => String.Compare(record.FirstName, startName) >= 0
-                              && String.Compare(record.FirstName, endName) <= 0)
+                .Where(record => record.FirstName.Contains(name))
                 .OrderBy(record => record.FirstName);
         }
 
@@ -60,11 +58,10 @@ namespace LogApp.DAL.Repositories
                 .OrderBy(record => record.IPAdress);
         }
 
-        public IQueryable<Record> RangeByLastName(string startName, string endName)
+        public IQueryable<Record> RangeByLastName(string name)
         {
             return _context.Set<Record>()
-                .Where(record => String.Compare(record.LastName, startName) >= 0
-                              && String.Compare(record.LastName, endName) <= 0)
+                .Where(record => record.LastName.Contains(name))
                 .OrderBy(record => record.LastName);
         }
 
