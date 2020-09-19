@@ -3,32 +3,32 @@ using System.Collections.Generic;
 using AutoMapper;
 using LogApp.Core.Models;
 using LogApp.Core.DTO;
-using LogApp.Core.Abstractions;
 using LogApp.Core.Abstractions.Services;
+using LogApp.Core.Abstractions.Repositories;
 
 namespace LogApp.Services
 {
     public class RecordPagingService : IRecordPagingService<RecordOverallDTO, Record>
     {
-        private IUnitOfWork _unitOfWork;
+        private IRecordRepository _recordRepository;
         private IMapper _mapper;
-        public RecordPagingService(IUnitOfWork unitOfWork, IMapper mapper)
+        public RecordPagingService(IRecordRepository recordRepository, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
+            _recordRepository = recordRepository;
             _mapper = mapper;
         }
 
         public List<RecordOverallDTO> GetPage(int page, int pageSize)
         {
-            var records = _unitOfWork.Records.GetAll();
-            var rangedRecords = _unitOfWork.Records.GetRange(records, page, pageSize).ToList();
+            var records = _recordRepository.GetAll();
+            var rangedRecords = _recordRepository.GetRange(records, page, pageSize).ToList();
             var recordsDTO = _mapper.Map<List<Record>, List<RecordOverallDTO>>(rangedRecords);
             return recordsDTO;
         }
 
         public List<RecordOverallDTO> GetPage(IQueryable<Record> records, int page, int pageSize)
         {
-            var rangedRecords = _unitOfWork.Records.GetRange(records, page, pageSize).ToList();
+            var rangedRecords = _recordRepository.GetRange(records, page, pageSize).ToList();
             var recordsDTO = _mapper.Map<List<Record>, List<RecordOverallDTO>>(rangedRecords);
             return recordsDTO;
         }

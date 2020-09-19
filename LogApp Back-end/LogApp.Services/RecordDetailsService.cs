@@ -1,24 +1,24 @@
 ﻿using AutoMapper;
 using LogApp.Core.Models;
 using LogApp.Core.DTO;
-using LogApp.Core.Abstractions;
 using LogApp.Core.Abstractions.Services;
+using LogApp.Core.Abstractions.Repositories;
 
 namespace LogApp.Services
 {
     public class RecordDetailsService : IRecordDetailsService<RecordDetailsDTO>
     {
-        private IUnitOfWork _unitOfWork;
         private IMapper _mapper;
-        public RecordDetailsService(IUnitOfWork unitOfWork, IMapper mapper)
+        private IRecordRepository _recordRepository;
+        public RecordDetailsService(IRecordRepository recordRepository, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
+            _recordRepository = recordRepository;
             _mapper = mapper;
         }
 
         public RecordDetailsDTO GetDetails(long id)
         {
-            var record = _unitOfWork.Records.GetById(id);
+            var record = _recordRepository.GetById(id);
             var recordDTO = _mapper.Map<Record, RecordDetailsDTO>(record);
             return recordDTO;
         }

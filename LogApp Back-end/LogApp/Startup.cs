@@ -8,12 +8,13 @@ using Microsoft.OpenApi.Models;
 using AutoMapper;
 using Hangfire;
 using LogApp.DAL;
+using LogApp.DAL.Repositories;
 using LogApp.Services;
 using LogApp.Core;
 using LogApp.Core.Models;
 using LogApp.Core.DTO;
-using LogApp.Core.Abstractions;
 using LogApp.Core.Abstractions.Services;
+using LogApp.Core.Abstractions.Repositories;
 using LogApp.Services.MessageHub;
 
 namespace LogApp
@@ -56,7 +57,7 @@ namespace LogApp
 
             services.AddDbContext<LogAppContext>(context => context.UseSqlServer(Configuration.GetConnectionString("DatabaseConnection")));
 
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IRecordRepository, RecordRepository>();
 
             services.AddScoped<IRecordService, RecordService>();
             services.AddScoped<IRecordPagingService<RecordOverallDTO, Record>, RecordPagingService>();
