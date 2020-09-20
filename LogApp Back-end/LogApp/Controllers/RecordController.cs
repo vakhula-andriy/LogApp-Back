@@ -25,12 +25,6 @@ namespace LogApp.Controllers
             _recordDetailsService = recordDetailsService;
         }
 
-        [HttpGet("/details/{id}")]
-        public ActionResult<RecordDetailsDTO> GetDetails(long id)
-        {
-            return _recordDetailsService.GetDetails(id);
-        }
-
         [HttpGet("/{page}")]
         public ActionResult<List<RecordOverallDTO>> GetPage(int page, int pageSize = 25)
         {
@@ -38,78 +32,50 @@ namespace LogApp.Controllers
             return _recordPagingService.GetPage(page, pageSize);
         }
 
-        [HttpGet("/ID/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByID([FromQuery] long minID,
-                                                            [FromQuery] long maxID,
-                                                            int page,
-                                                            int pageSize = 25)
+        [HttpGet("/{field}/{page}")]
+        public ActionResult<List<RecordOverallDTO>> GetByID(int page,
+                                                            string field,
+                                                            [FromQuery] string searchValue,
+                                                            [FromQuery] string minFilterValue,
+                                                            [FromQuery] string maxFilterValue,
+                                                            [FromQuery] int pageSize = 25)
         {
-            var filteredRecords = _recordService.FilterByID(minID, maxID);
+            IQueryable<Record> filteredRecords;
+            switch (field)
+            {
+                case "ID":
+                    filteredRecords = _recordService.FilterByID(long.Parse(minFilterValue), long.Parse(maxFilterValue));
+                    break;
+                case "age":
+                    filteredRecords = _recordService.FilterByAge(int.Parse(minFilterValue), int.Parse(maxFilterValue));
+                    break;
+                case "IP":
+                    filteredRecords = _recordService.FilterByIP(minFilterValue, maxFilterValue);
+                    break;
+                case "time":
+                    filteredRecords = _recordService.FilterByTime(DateTimeOffset.Parse(minFilterValue), DateTimeOffset.Parse(maxFilterValue));
+                    break;
+                case "firstName":
+                    filteredRecords = _recordService.FilterByFirstName(searchValue);
+                    break;
+                case "lastName":
+                    filteredRecords = _recordService.FilterByLastName(searchValue);
+                    break;
+                case "email":
+                    filteredRecords = _recordService.FilterByEmail(searchValue);
+                    break;
+                default:
+                    throw new ArgumentException($"Filtering by field {field} is not supported. Try another one or fix the typo");
+            }
+
             Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
             return _recordPagingService.GetPage(filteredRecords, page, pageSize);
         }
 
-        [HttpGet("/age/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByAge([FromQuery] int minAge,
-                                                             [FromQuery] int maxAge,
-                                                             int page,
-                                                             int pageSize = 25)
+        [HttpGet("/details/{id}")]
+        public ActionResult<RecordDetailsDTO> GetDetails(long id)
         {
-            var filteredRecords = _recordService.FilterByAge(minAge, maxAge);
-            Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
-            return _recordPagingService.GetPage(filteredRecords, page, pageSize);
-        }
-
-        [HttpGet("/firstName/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByFirstName([FromQuery] string name,
-                                                                   int page,
-                                                                   int pageSize = 25)
-        {
-            var filteredRecords = _recordService.FilterByFirstName(name);
-            Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
-            return _recordPagingService.GetPage(filteredRecords, page, pageSize);
-        }
-
-        [HttpGet("/lastName/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByLastName([FromQuery] string name,
-                                                                  int page,
-                                                                  int pageSize = 25)
-        {
-            var filteredRecords = _recordService.FilterByLastName(name);
-            Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
-            return _recordPagingService.GetPage(filteredRecords, page, pageSize);
-        }
-
-        [HttpGet("/email/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByEmail([FromQuery] string email,
-                                                               int page,
-                                                               int pageSize = 25)
-        {
-            var filteredRecords = _recordService.FilterByEmail(email);
-            Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
-            return _recordPagingService.GetPage(filteredRecords, page, pageSize);
-        }
-
-        [HttpGet("/IP/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByIP([FromQuery] string minIP,
-                                                            [FromQuery] string maxIP,
-                                                            int page,
-                                                            int pageSize = 25)
-        {
-            var filteredRecords = _recordService.FilterByIP(minIP, maxIP);
-            Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
-            return _recordPagingService.GetPage(filteredRecords, page, pageSize);
-        }
-
-        [HttpGet("/time/{page}")]
-        public ActionResult<List<RecordOverallDTO>> GetByTime([FromQuery] DateTimeOffset minTime,
-                                                              [FromQuery] DateTimeOffset maxTime,
-                                                              int page,
-                                                              int pageSize = 25)
-        {
-            var filteredRecords = _recordService.FilterByTime(minTime, maxTime);
-            Response.Headers.Add("Records_Amount", filteredRecords.Count().ToString());
-            return _recordPagingService.GetPage(filteredRecords, page, pageSize);
+            return _recordDetailsService.GetDetails(id);
         }
     }
 }
