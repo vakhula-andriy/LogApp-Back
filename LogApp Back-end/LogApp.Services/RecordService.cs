@@ -7,6 +7,8 @@ using LogApp.Core.Abstractions.Repositories;
 using LogApp.Core.Models;
 using LogApp.Core.Validators;
 using LogApp.DAL;
+using LogApp.Services.MessageHub;
+using Microsoft.AspNetCore.SignalR;
 
 namespace LogApp.Services
 {
@@ -15,11 +17,13 @@ namespace LogApp.Services
         private readonly IRecordRepository _recordRepository;
         private readonly LogAppContext _context;
         private readonly RecordValidator _recordsValidator;
-        public RecordService(IRecordRepository recordRepository, LogAppContext logAppContext)
+        private IHubContext<NotifyHub, IMesageHubClient> _hubContext;
+        public RecordService(IRecordRepository recordRepository, LogAppContext logAppContext, IHubContext<NotifyHub, IMesageHubClient> hubContext)
         {
             _recordRepository = recordRepository;
             _context = logAppContext;
             _recordsValidator = new RecordValidator();
+            _hubContext = hubContext;
         }
 
         public void Delete(int id)
@@ -39,6 +43,7 @@ namespace LogApp.Services
             //records.ForEach(rec => _recordsValidator.ValidateAndThrow(rec));
             _recordRepository.AddRange(records);
             _context.SaveChanges();
+            _hubContext.Clients.All.RecordsAdded(records.Count);
             return records;
         }
         public Record Update(Record record)

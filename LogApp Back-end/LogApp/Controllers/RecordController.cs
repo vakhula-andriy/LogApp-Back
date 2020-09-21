@@ -28,7 +28,7 @@ namespace LogApp.Controllers
         [HttpGet("/{page}")]
         public ActionResult<List<RecordOverallDTO>> GetPage(int page, int pageSize = 25)
         {
-            Response.Headers.Add("Records_Amount", _recordService.GetRecordsAmount().ToString());
+            Response.Headers.Add("records_amount", _recordService.GetRecordsAmount().ToString());
             return _recordPagingService.GetPage(page, pageSize);
         }
 

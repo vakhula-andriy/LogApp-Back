@@ -35,6 +35,7 @@ namespace LogApp
                 builder
                     .AllowAnyMethod()
                     .AllowAnyHeader()
+                    .WithExposedHeaders("records_amount")
                     .AllowCredentials()
                     .WithOrigins("http://localhost:4200");
             }));
